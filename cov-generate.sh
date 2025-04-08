@@ -27,12 +27,12 @@ DIR=`dirname $0`
 test -n "$DIR" && export PATH=$PATH:$DIR
 
 mkdir report 2> /dev/null
-lcov $OPT --no-checksum --zerocounters --directory . || exit
-lcov $OPT --no-checksum --capture --initial --directory . --output-file report/trace.lcov_base || exit 1
+lcov $OPT --no-checksum --ignore-errors inconsistent,unsupported --zerocounters --directory . || exit
+lcov $OPT --no-checksum --ignore-errors inconsistent,unsupported --capture --initial --directory . --output-file report/trace.lcov_base || exit 1
 "$2" "$1"/*
-lcov $OPT --no-checksum --capture --directory . --output-file report/trace.lcov_info || exit 1
-lcov $OPT --no-checksum -a report/trace.lcov_base -a report/trace.lcov_info --output-file report/trace.lcov_tmp || exit 1
-lcov $OPT --no-checksum -r report/trace.lcov_tmp /usr/include/\*  --output-file report/trace.lcov_info_final || exit 1
-genhtml --ignore-errors source --output-directory report report/trace.lcov_info_final
+lcov $OPT --no-checksum --ignore-errors inconsistent,unsupported --capture --directory . --output-file report/trace.lcov_info || exit 1
+lcov $OPT --no-checksum --ignore-errors inconsistent,unsupported -a report/trace.lcov_base -a report/trace.lcov_info --output-file report/trace.lcov_tmp || exit 1
+lcov $OPT --no-checksum --ignore-errors inconsistent,unsupported -r report/trace.lcov_tmp /usr/include/\*  --output-file report/trace.lcov_info_final || exit 1
+genhtml --ignore-errors source,format --output-directory report report/trace.lcov_info_final
 echo
 echo Report: `pwd`/report/index.html
